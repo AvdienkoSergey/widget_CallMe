@@ -1,0 +1,31 @@
+{
+  "name": "widgetcallme",
+  "version": "1.0.0",
+  "description": "You can order a call at the right time",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AvdienkoSergey/widget_CallMe.git"
+  },
+  "author": "Avdienko Sergey",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AvdienkoSergey/widget_CallMe/issues"
+  },
+  "homepage": "https://github.com/AvdienkoSergey/widget_CallMe#readme",
+  "dependencies": {
+    "consolidate": "^0.16.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "mustache": "^4.2.0"
+  },
+  "devDependencies": {
+    "boom": "^7.3.0",
+    "express-promise-router": "^4.1.1",
+    "morgan": "^1.10.0"
+  }
+}
