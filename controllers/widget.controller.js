@@ -1,7 +1,7 @@
 const CRUDController = require('./CRUD.controller');
 
-const localBD = [];
+const Store = new Map();
 
 module.exports = {
-  ...CRUDController(localBD),
+  ...CRUDController(Store),
 };

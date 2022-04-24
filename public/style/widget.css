@@ -1,3 +1,33 @@
-* {
-  color: red;
+.btn-small__br-4 {
+  border-radius: 4px;
+}
+.card__br-4 {
+  border-radius: 4px;
+}
+.card-action__flex {
+  display: flex;
+  justify-content: space-between;
+}
+.row__mt-20 {
+  margin: 20px 0px 0px 0px;
+}
+#helper{
+  display: none;
+}
+#helper.visible {
+  display: block;
+  border-radius: 4px;
+  margin: 20px 5px;
+}
+#error {
+  display: none;
+}
+#error.visible {
+  display: block;
+}
+#success {
+  display: none;
+}
+#success.visible {
+  display: block;
 }

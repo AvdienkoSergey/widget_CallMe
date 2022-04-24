@@ -8,7 +8,7 @@ window.Widget = {
       try { 
         const widget = document.createElement("iframe");
         widget.setAttribute("src", this.Widget.UrlWidget + "?phone=" + phone );
-        widget.setAttribute("frameborder", "1");
+        widget.setAttribute("frameborder", "0");
         widget.setAttribute("scrolling", "no");
         widget.setAttribute("width", width);
         widget.setAttribute("height", height);
