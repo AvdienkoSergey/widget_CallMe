@@ -3,6 +3,7 @@ const Cors = require("cors");
 const Morgan = require("morgan");
 const Http = require("http");
 const Engine = require("consolidate");
+const BodyParser = require('body-parser');
 
 // Инициализация приложения
 const App = Express();
@@ -10,6 +11,9 @@ const App = Express();
 App.use(Morgan("dev"));
 // Защита на уровне домена
 App.use(Cors());
+// Парсер запросов
+App.use(BodyParser.json());
+App.use(BodyParser.urlencoded({ extended: true }));
 
 App.set("views", __dirname + "/public");
 App.engine("html", Engine.mustache);
@@ -19,11 +23,11 @@ App.use("/static", Express.static(__dirname + "/public"));
 
 App.get("/", (req, res) => {
   const { phone } = req.query;
-  res.render("index", { phone });
+  res.render("widget", { phone });
 })
 
 App.get("/widget", (req, res) => {
-  res.render("widget", { title: "Демо виджета" });
+  res.render("demo", { title: "Демо виджета" });
 })
 
 const { routes } = require("./routes");

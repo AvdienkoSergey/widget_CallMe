@@ -1,33 +1,25 @@
-.btn-small__br-4 {
-  border-radius: 4px;
-}
-.card__br-4 {
+.br-4 {
   border-radius: 4px;
 }
 .card-action__flex {
   display: flex;
   justify-content: space-between;
 }
-.row__mt-20 {
+.mt-20 {
   margin: 20px 0px 0px 0px;
 }
-#helper{
+.widget-element-hidden {
   display: none;
 }
-#helper.visible {
+.widget-element-visible {
   display: block;
+}
+.widget-helper-unique-class {
   border-radius: 4px;
   margin: 20px 5px;
 }
-#error {
-  display: none;
-}
-#error.visible {
-  display: block;
-}
-#success {
-  display: none;
-}
-#success.visible {
-  display: block;
+.widget-error-close-button,
+.widget-success-close-button,
+.widget-delete-call-button {
+  cursor: pointer;
 }
