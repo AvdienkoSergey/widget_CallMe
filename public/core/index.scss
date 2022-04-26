@@ -1,0 +1,38 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap&subset=cyrillic");
+@import url("https://fonts.googleapis.com/css2?family=Material+Icons");
+
+// Materialize
+@import url("https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css");
+
+// Animation
+@import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css");
+// @import "./resourse/scss/animation.scss";
+
+// Mixin media query
+// @import "./resourse/scss/mixin.scss";
+
+.br-4 {
+  border-radius: 4px;
+}
+.card-action__flex {
+  display: flex;
+  justify-content: space-between;
+}
+.mt-20 {
+  margin: 20px 0px 0px 0px;
+}
+.widget-element-hidden {
+  display: none;
+}
+.widget-element-visible {
+  display: block;
+}
+.widget-helper-unique-class {
+  border-radius: 4px;
+  margin: 20px 5px;
+}
+.widget-close-button,
+.widget-delete-call-button {
+  cursor: pointer;
+}

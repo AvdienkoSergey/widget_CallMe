@@ -1,4 +1,4 @@
-window.Widget = ( function() {
+const Widget = ( function() {
   const URL = "http://localhost:3000/";
 
   function widgetParametrs (widgetSettings) {

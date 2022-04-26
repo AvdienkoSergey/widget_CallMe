@@ -19,15 +19,15 @@ App.set("views", __dirname + "/public");
 App.engine("html", Engine.mustache);
 App.set("view engine", "html");
 
-App.use("/static", Express.static(__dirname + "/public"));
+App.use("/public", Express.static(__dirname + "/public"));
 
 App.get("/", (req, res) => {
   const { phone } = req.query;
-  res.render("widget", { phone });
+  res.render("widget/index", { phone });
 })
 
-App.get("/widget", (req, res) => {
-  res.render("demo", { title: "Демо виджета" });
+App.get("/demo", (req, res) => {
+  res.render("demo/index", { title: "Демо виджета" });
 })
 
 const { routes } = require("./routes");
