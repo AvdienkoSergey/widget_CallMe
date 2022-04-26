@@ -1,5 +1,8 @@
 document.addEventListener("DOMContentLoaded", async function() {
 
+  // [ 2 ] Разобраться с удалением
+  // [ 3 ] Пагинация при LISTCALLS > 3
+
   const elementData = document.getElementById("widget-date-unique-id");
   const elementTime = document.getElementById("widget-time-unique-id");
   const elementVoiceMessage = document.getElementById("widget-voice-message-unique-id");
@@ -112,7 +115,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
   elementCreateCallButton.addEventListener("click", () => {
     createCall(elementData, elementTime, elementVoiceMessage, elementHelper, elementError, elementSuccess)
-      .validate()
+      .create()
   });
   elementOpenListCallsButton.addEventListener("click", () => {
     // innerText
@@ -172,118 +175,81 @@ document.addEventListener("DOMContentLoaded", async function() {
     elementSecondScreen.classList.add("widget-element-hidden");
   });
 
-  const API = "http://localhost:3000/api/widget";
-  const LISTCALLS = await getListCalls().send() || [];
+  const SUBSCRIBER = elementWidgetSettings.getAttribute("data-phone");
+  const LISTCALLS = await (await getListCalls(SUBSCRIBER)).json() || [];
 
-  function getListCalls() {
+  function createCall(date, time, message, helper, helperMessage) {
     return {
-      send: async function () {
-        const phone = elementWidgetSettings.getAttribute("data-phone");
-        const response = await fetch(API + "/" + phone, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json;charset=utf-8"
-          }
-        });
-        const LISTCALLS = await response.json();
-        return LISTCALLS; 
-      }
-    }; 
-  }
-  function createCall(date, time, message, helper, error, success) {
-    return {
-      date,
-      time,
-      message,
-      helper,
-      error,
-      success,
-      errorMessage: function (text, element) {
-        this.helper.classList.add("widget-element-visible", "red", "lighten-5", "red-text");
-        this.error.classList.add("widget-element-visible");
-        this.error.innerHTML = `
+      helperMessage: function (text, element, color = "red") {
+        helper.classList.add("widget-element-visible", `${color}`, "lighten-5", `${color}-text`);
+        helperMessage.classList.add("widget-element-visible");
+        helperMessage.innerHTML = `
           <span class="badge">
-            <i class="material-icons red-text widget-error-close-button">
+            <i class="material-icons ${color}-text widget-close-button">
               cancel
             </i>
           </span>
           <span>${text}</span>
         `;
-        element.focus();
-        const elementCloseErrorMessageButton = document.querySelector(".widget-error-close-button");
-        const close = () => {
-          this.helper.classList.remove("widget-element-visible", "red", "lighten-5", "red-text");
-          this.error.classList.remove("widget-element-visible");
-        };
-        elementCloseErrorMessageButton.addEventListener("click", close, { once: true });
-        elementOpenListCallsButton.addEventListener("click", close, { once: true });
-        elementCloseListCallsButton.addEventListener("click", close, { once: true });
+        element ? element.focus() : undefined;
+
+        initCloseButton();
+
+        function initCloseButton() {
+          const elementCloseErrorMessageButton = document.querySelector(".widget-close-button");
+          const close = () => {
+            helper.classList.remove("widget-element-visible", `${color}`, "lighten-5", `${color}-text`);
+            helperMessage.classList.remove("widget-element-visible");
+          };
+          elementCloseErrorMessageButton.addEventListener("click", close, { once: true });
+          elementOpenListCallsButton.addEventListener("click", close, { once: true });
+          elementCloseListCallsButton.addEventListener("click", close, { once: true });
+        }
+
       },
-      successMessage: function (text) {
-        // clear
-        this.message.value = "";
-        this.time.value = "";
-        // add Class
-        this.helper.classList.add("widget-element-visible", "teal", "lighten-5", "teal-text");
-        this.error.classList.add("widget-element-visible");
-        this.error.innerHTML = `
-          <span class="badge">
-            <i class="material-icons teal-text widget-success-close-button">
-              cancel
-            </i>
-          </span>
-          <span>${text}</span>
-        `;
-        const elementCloseSuccessMessageButton = document.querySelector(".widget-success-close-button");
-        const close = () => {
-          this.helper.classList.remove("widget-element-visible", "teal", "lighten-5", "teal-text");
-          this.error.classList.remove("widget-element-visible");
-        };
-        elementCloseSuccessMessageButton.addEventListener("click", close, { once: true });
-        elementOpenListCallsButton.addEventListener("click", close, { once: true });
-        elementCloseListCallsButton.addEventListener("click", close, { once: true });
+      formatter: function (date, time) {
+        const dateArr = date.value.split(".");
+        const timeArr = time.value.split(":");
+        const dateTime = new Date(dateArr[2], dateArr[1] - 1, dateArr[0], timeArr[0], timeArr[1], 0 );
+        return dateTime.getTime();
       },
-      validate: function () {
-        if (!this.date.value.length) {
-          return this.errorMessage("Укажите дату", this.date);
+      validation: function () {
+
+        if (!date.value.length) {
+          return this.helperMessage("Укажите дату", date);
         }
-        if (!this.time.value.length) {
-          return this.errorMessage("Укажите время", this.time);
+        if (!time.value.length) {
+          return this.helperMessage("Укажите время", time);
         }
-        if (!this.message.value.length) {
-          return this.errorMessage("Напишите сообщение", this.message);
+        if (!message.value.length) {
+          return this.helperMessage("Напишите сообщение", message);
         }
-        if (this.message.value.length > 60) {
-          return this.errorMessage("Сократите свое голосовое сообщение", this.message);
+        if (message.value.length > 60) {
+          return this.helperMessage("Сократите свое голосовое сообщение", message);
         }
-        const date = this.date.value.split(".");
-        const time = this.time.value.split(":");
-        const now = new Date(date[2], date[1] - 1, date[0], time[0], time[1], 0 );
-        if (now.getTime() < Date.now() + 1000*60*60*3) {
-          return this.errorMessage("Для валидации голосового сообщения требуется больше времени (3 часа)", this.time);
+        if (this.formatter(date, time) < Date.now() + 1000*60*60*3) {
+          return this.helperMessage("Для валидации голосового сообщения требуется больше времени (3 часа)", time);
         }
-        this.send(now.getTime());
+        return true;
       },
-      send: async function (time) {
-        const phone = elementWidgetSettings.getAttribute("data-phone");
-        const callOptions = {
-          phone: phone,
-          time: time,
+      create: async function () {
+
+        if (!this.validation()) return;
+        
+        // getNewCall --> from ./controller/widget.controller
+        LISTCALLS.push(await(await getNewCall({
+          phone: SUBSCRIBER,
+          time: this.formatter(date, time),
           message: message.value,
-        };
-        const response = await fetch(API, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json;charset=utf-8"
-          },
-          body: JSON.stringify(callOptions),
-        });
-        const call = await response.json();
-        LISTCALLS.push(call);
-        return this.successMessage("Звонок успешно запланирован");
-      }
+        })).json());
+
+        return this.helperMessage("Звонок успешно запланирован", null, 'teal');
+
+      },
     }
   }
+
+  // Not ready
   function deleteCall() {
     return {
       send: async function () {
