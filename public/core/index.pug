@@ -6,50 +6,27 @@ html(lang='ru')
     title Планировщик звонков /public/widget/
 
     script(src='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js')
-    script(src="/public/core/controllers/fetch.controller.js")
-    script(src="/public/core/controllers/widget.controller.js")
 
   body.body 
     div.row
       div.col.s12
+        //- Card
         div.card.br-4
-          input(data-phone="{{phone}}" type="hidden").widget-settings-unique-class
+          //- Subscriber
+          include components/card/subscriber/index.pug
+  
           div.card-content
-            span.card-title.widget-title-unique-class Планировщик звонков
-            p.widget-description-unique-class Вы можете запланировать звонок на конкретное время:
-            div.widget-first-screen-unique-class
-              div.row.mt-20
-                div.input-field.col.s6
-                  input(
-                    placeholder="Время" type="text"
-                  ).validate.timepicker#widget-time-unique-id
-                  label(for="widget-time-unique-id") Время
-
-                div.input-field.col.s6
-                  input(
-                    placeholder="Placeholder" type="text"
-                  ).validate.datepicker#widget-date-unique-id
-                  label(for="widget-date-unique-id") День
-
-              p Напишите сообщение, который хотите услышать во время звонка:
-
-              div.row.mt-20
-                div.input-field.col.s12
-                  textarea(
-                    placeholder="Голосовое сообщение" data-length="60"
-                  ).materialize-textarea#widget-voice-message-unique-id
-                  label(for="widget-voice-message-unique-id") Сообщениe
-
-            div.widget-second-screen-unique-class.widget-element-hidden.mt-20
-              ul.collection.widget-collection-calls-unique-class
-
-            div.row.widget-helper-unique-class.widget-element-hidden
-              div.input-field.col.s12
-                p.widget-error-unique-class.widget-element-hidden
-                p.widget-success-unique-class.widget-element-hidden
+            //- Title
+            span.card-title.widget-title-unique-class
+            //- Description
+            p.widget-description-unique-class
+            //- First screen
+            include components/card/first-screen/index.pug
+            //- Second screen
+            include components/card/second-screen/index.pug
+            //- Helper
+            include components/card/helper/index.pug
 
           div.card-action.card-action__flex
-            a.btn.btn-small.br-4.white.black-text.widget-open-list-calls-unique-class
-              i.material-icons list
-            a.btn.btn-small.br-4.red.lighten-5.red-text.widget-close-list-calls-unique-class.widget-element-hidden Закрыть список звонков
-            a.btn.btn-small.br-4.teal.lighten-5.teal-text.widget-create-call-unique-class Создать звонок
+            //- Button group
+            include components/card/buttons-group/index.pug

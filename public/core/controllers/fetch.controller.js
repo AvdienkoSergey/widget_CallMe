@@ -34,3 +34,5 @@ const request = async ({
 
   return response;
 };
+
+module.exports = { request } 

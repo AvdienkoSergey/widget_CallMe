@@ -1,0 +1,22 @@
+div.widget-first-screen-unique-class
+  div.row.mt-20
+
+    div.input-field.col.s6
+      input(
+        placeholder="Время" type="text"
+      ).validate.timepicker#widget-time-unique-id
+      label(for="widget-time-unique-id") Время
+
+    div.input-field.col.s6
+      input(
+        placeholder="Placeholder" type="text"
+      ).validate.datepicker#widget-date-unique-id
+      label(for="widget-date-unique-id") День
+
+    div.row.mt-20.col.s12
+      p(style="margin: 20px 0px") Напишите сообщение, который хотите услышать во время звонка:
+      div.input-field
+        textarea(
+          placeholder="Голосовое сообщение" data-length="60"
+        ).materialize-textarea#widget-voice-message-unique-id
+        label(for="widget-voice-message-unique-id") Сообщениe

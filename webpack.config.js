@@ -7,7 +7,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const PATHS = {
-  src: path.join(__dirname, "./public/core"),
+  core: path.join(__dirname, "./public/core"),
   pages: path.join(__dirname, "./public/core/pages"),
 };
 
@@ -39,7 +39,7 @@ const cssLoaders = (extra) => {
 module.exports = {
   mode: "production",
   entry: {
-    index: `${PATHS.src}/index.js`,
+    index: `${PATHS.core}/index.js`,
   },
   output: {
     path: path.resolve(__dirname, "./public/widget"),
@@ -100,7 +100,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      "~src": PATHS.src,
+      "~core": PATHS.core,
     },
   },
   plugins: [
