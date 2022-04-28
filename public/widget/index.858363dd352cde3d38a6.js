@@ -10,13 +10,22 @@
 const elementCreateCallButton = document.querySelector(".widget-create-call-unique-class");
 const elementOpenListCallsButton = document.querySelector(".widget-open-list-calls-unique-class");
 const elementCloseListCallsButton = document.querySelector(".widget-close-list-calls-unique-class");
+const elementPaginator = document.querySelector(".paginator-unique-class");
+const elementLeftButton = document.querySelector(".paginator-unique-class__left-button");
+const elementRightButton = document.querySelector(".paginator-unique-class__right-button");
+const elementCurrentPage = document.querySelector(".paginator-unique-class__current-page");
 const listiners = {
   create: (createCallFunction, getHelpMessage, fetchCreateCall, params) => {
     params.buttons.create.addEventListener("click", () => {
-      createCallFunction(params.call.date, params.call.time, params.call.message, getHelpMessage, fetchCreateCall, params.LISTCALLS).create();
+      const {
+        date,
+        time,
+        message
+      } = params.call;
+      createCallFunction(date, time, message, getHelpMessage, fetchCreateCall, params.LISTCALLS).create();
     });
   },
-  open: (updateTitleFunction, updateDescriptionFunction, fetchListCalls, printListCalls, params) => {
+  open: (updateTitleFunction, updateDescriptionFunction, fetchListCalls, printListCalls, deleteCall, params) => {
     params.buttons.open.addEventListener("click", async () => {
       // render new text
       updateTitleFunction("Запланированные звонки");
@@ -27,12 +36,14 @@ const listiners = {
       params.screen.first.classList.add("widget-element-hidden"); // removeClass
 
       params.buttons.close.classList.remove("widget-element-hidden");
-      params.screen.second.classList.remove("widget-element-hidden"); // add lister
+      params.screen.second.classList.remove("widget-element-hidden");
+      elementPaginator.classList.remove("widget-element-hidden"); // add lister
 
       listiners.close(updateTitleFunction, updateDescriptionFunction, params); // events
 
-      params.LISTCALLS = (await (await fetchListCalls(params.SUBSCRIBER)).json()) || [];
-      printListCalls(params.LISTCALLS);
+      const LISTCALLS = (await (await fetchListCalls(params.SUBSCRIBER)).json()) || []; // print
+
+      printListCalls(LISTCALLS, deleteCall);
     });
   },
   close: (updateTitleFunction, updateDescriptionFunction, params) => {
@@ -47,6 +58,25 @@ const listiners = {
 
       params.buttons.close.classList.add("widget-element-hidden");
       params.screen.second.classList.add("widget-element-hidden");
+      elementPaginator.classList.add("widget-element-hidden");
+    });
+  },
+  paginationUp: (deleteCall, printListCalls, fetchListCalls, params) => {
+    params.buttons.paginationUp.addEventListener("click", async () => {
+      const LISTCALLS = (await (await fetchListCalls(params.SUBSCRIBER)).json()) || [];
+      const count = Number(elementCurrentPage.textContent);
+      if (count * 4 > LISTCALLS.length) return;
+      elementCurrentPage.innerText = count + 1;
+      printListCalls(LISTCALLS, deleteCall);
+    });
+  },
+  paginationDown: (deleteCall, printListCalls, fetchListCalls, params) => {
+    params.buttons.paginationDown.addEventListener("click", async () => {
+      const LISTCALLS = (await (await fetchListCalls(params.SUBSCRIBER)).json()) || [];
+      const count = Number(elementCurrentPage.textContent);
+      if (!count || count == 1) return;
+      elementCurrentPage.innerText = count - 1;
+      printListCalls(LISTCALLS, deleteCall);
     });
   }
 };
@@ -54,6 +84,8 @@ module.exports = {
   elementCreateButton: elementCreateCallButton,
   elementOpenButton: elementOpenListCallsButton,
   elementCloseButton: elementCloseListCallsButton,
+  elementPaginationUp: elementRightButton,
+  elementPaginationDown: elementLeftButton,
   listiners
 };
 
@@ -161,6 +193,8 @@ function getHelpMessage(text, element, color = "red") {
 
   function initCloseButton() {
     const elementCloseErrorMessageButton = document.querySelector(".widget-close-button");
+    const elementOpenListCallsButton = document.querySelector(".widget-open-list-calls-unique-class");
+    const elementCloseListCallsButton = document.querySelector(".widget-close-list-calls-unique-class");
 
     const close = () => {
       helperComponent.classList.remove("widget-element-visible", `${color}`, "lighten-5", `${color}-text`);
@@ -169,8 +203,13 @@ function getHelpMessage(text, element, color = "red") {
 
     elementCloseErrorMessageButton.addEventListener("click", close, {
       once: true
-    }); // elementOpenListCallsButton.addEventListener("click", close, { once: true });
-    // elementCloseListCallsButton.addEventListener("click", close, { once: true });
+    });
+    elementOpenListCallsButton.addEventListener("click", close, {
+      once: true
+    });
+    elementCloseListCallsButton.addEventListener("click", close, {
+      once: true
+    });
   }
 }
 
@@ -217,7 +256,9 @@ const PARAMS = {
   buttons: {
     open: _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_7__.elementOpenButton,
     close: _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_7__.elementCloseButton,
-    create: _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_7__.elementCreateButton
+    create: _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_7__.elementCreateButton,
+    paginationUp: _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_7__.elementPaginationUp,
+    paginationDown: _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_7__.elementPaginationDown
   },
   screen: {
     first: _first_screen_index_js__WEBPACK_IMPORTED_MODULE_4__.elementFirstScreen,
@@ -230,16 +271,16 @@ const PARAMS = {
   }
 };
 document.addEventListener("DOMContentLoaded", async function () {
-  // render new text
   (0,_title_index_js__WEBPACK_IMPORTED_MODULE_2__.updateTitle)("Планировщик звонков");
   (0,_description_index_js__WEBPACK_IMPORTED_MODULE_3__.updateDescription)("Вы можете запланировать звонок на конкретное время:"); // fetch list calls
 
-  LISTCALLS = (await (await (0,_controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_0__.fetchListCalls)(SUBSCRIBER)).json()) || []; // - This is list calls for current subscriber
-  // printListCalls(LISTCALLS);
-  // createCall(date, time, message, getHelperMessage);
+  LISTCALLS = (await (await (0,_controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_0__.fetchListCalls)(SUBSCRIBER)).json()) || []; // - This is a list of calls for the current subscriber. 
+  // - The subscriber is set in the basic settings when calling the widget
 
-  _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_7__.listiners.open(_title_index_js__WEBPACK_IMPORTED_MODULE_2__.updateTitle, _description_index_js__WEBPACK_IMPORTED_MODULE_3__.updateDescription, _controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_0__.fetchListCalls, _second_screen_index_js__WEBPACK_IMPORTED_MODULE_5__.printListCalls, PARAMS);
+  _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_7__.listiners.open(_title_index_js__WEBPACK_IMPORTED_MODULE_2__.updateTitle, _description_index_js__WEBPACK_IMPORTED_MODULE_3__.updateDescription, _controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_0__.fetchListCalls, _second_screen_index_js__WEBPACK_IMPORTED_MODULE_5__.printListCalls, deleteCall, PARAMS);
   _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_7__.listiners.create(createCall, _helper_index_js__WEBPACK_IMPORTED_MODULE_6__.getHelpMessage, _controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_0__.fetchCreateCall, PARAMS);
+  _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_7__.listiners.paginationUp(deleteCall, _second_screen_index_js__WEBPACK_IMPORTED_MODULE_5__.printListCalls, _controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_0__.fetchListCalls, PARAMS);
+  _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_7__.listiners.paginationDown(deleteCall, _second_screen_index_js__WEBPACK_IMPORTED_MODULE_5__.printListCalls, _controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_0__.fetchListCalls, PARAMS);
 });
 
 function createCall(date, time, message, getHelpMessage, fetchCreateCall) {
@@ -278,12 +319,11 @@ function createCall(date, time, message, getHelpMessage, fetchCreateCall) {
 
   async function create() {
     if (!validation()) return;
-    const newCall = await (await fetchCreateCall({
+    await (await fetchCreateCall({
       phone: SUBSCRIBER,
       time: this.formatter(date, time),
       message: message.value
     })).json();
-    console.log(newCall);
     return getHelpMessage("Звонок успешно запланирован", null, 'teal');
   }
 
@@ -294,12 +334,8 @@ function createCall(date, time, message, getHelpMessage, fetchCreateCall) {
   };
 }
 
-function deleteCall() {
-  return {
-    send: async function () {
-      console.log("deleteCall");
-    }
-  };
+async function deleteCall() {
+  console.log("deleteCall");
 }
 
 /***/ }),
@@ -313,7 +349,7 @@ function deleteCall() {
 const elementSecondScreen = document.querySelector(".widget-second-screen-unique-class");
 const elementListCalls = document.querySelector(".widget-collection-calls-unique-class");
 
-function printListCalls(LISTCALLS) {
+function printListCalls(LISTCALLS, deleteCall) {
   function clearListCalls() {
     elementListCalls.innerHTML = "";
   }
@@ -342,18 +378,23 @@ function printListCalls(LISTCALLS) {
     }
 
     elementListCalls.append(printCall(Call));
+    createEventForButton(Call.id, deleteCall);
   }
 
-  clearListCalls();
   if (!LISTCALLS.length) return emptyListCalls();
+  clearListCalls();
+  const elementCurrentPage = document.querySelector(".paginator-unique-class__current-page");
+  const startIndex = (Number(elementCurrentPage.textContent) - 1) * 4;
+  const stopIndex = 4 * Number(elementCurrentPage.textContent);
+  const listCalls = LISTCALLS.slice(startIndex, stopIndex); // Печать
 
-  for (let index = 0; index < LISTCALLS.length; index++) {
+  for (let index = 0; index < listCalls.length; index++) {
     const {
       id,
       time,
       timeString,
       message
-    } = LISTCALLS[index];
+    } = listCalls[index];
     pushCallInListCalls({
       id,
       time,
@@ -361,13 +402,14 @@ function printListCalls(LISTCALLS) {
       message
     });
   }
-} // function createEventForButton(id) {
-//   const buttonDelete = document.getElementById(`button-delete-call-${id}-unique`);
-//   buttonDelete.addEventListener("click", async () => {
-//     console.log("deleteCall")
-//   });
-// }
+}
 
+function createEventForButton(id, deleteCall) {
+  const buttonDelete = document.getElementById(`button-delete-call-${id}-unique`);
+  buttonDelete.addEventListener("click", async () => {
+    await deleteCall();
+  });
+}
 
 module.exports = {
   elementSecondScreen,
@@ -586,4 +628,4 @@ __webpack_require__.r(__webpack_exports__);
 
 /******/ })()
 ;
-//# sourceMappingURL=index.a69714a0b8342a6dd914.js.map
+//# sourceMappingURL=index.858363dd352cde3d38a6.js.map

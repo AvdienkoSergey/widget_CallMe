@@ -1,11 +1,11 @@
 import { fetchListCalls, fetchCreateCall } from "../../controllers/widget.controller.js";
 import { elementSubscriber } from "./subscriber/index.js";
-import { elementTitle, updateTitle } from  "./title/index.js";
-import { elementDescription, updateDescription } from "./description/index.js";
+import { updateTitle } from  "./title/index.js";
+import { updateDescription } from "./description/index.js";
 import { elementFirstScreen, elementDate, elementTime, elementMessage } from "./first-screen/index.js";
-import { elementSecondScreen, elementListCalls, printListCalls } from "./second-screen/index.js";
-import { helperComponent, helperMessageComponent, getHelpMessage} from "./helper/index.js";
-import { elementCreateButton, elementOpenButton, elementCloseButton, listiners } from "./buttons-group/index.js";
+import { elementSecondScreen, printListCalls } from "./second-screen/index.js";
+import { getHelpMessage} from "./helper/index.js";
+import { elementCreateButton, elementOpenButton, elementCloseButton, elementPaginationUp, elementPaginationDown, listiners } from "./buttons-group/index.js";
 
 const SUBSCRIBER = elementSubscriber.getAttribute("data-phone");
 let LISTCALLS = [];
@@ -16,6 +16,8 @@ const PARAMS = {
     open: elementOpenButton,
     close: elementCloseButton,
     create: elementCreateButton,
+    paginationUp: elementPaginationUp,
+    paginationDown: elementPaginationDown,
   },
   screen: {
     first: elementFirstScreen,
@@ -29,16 +31,17 @@ const PARAMS = {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
-  // render new text
   updateTitle("Планировщик звонков");
   updateDescription("Вы можете запланировать звонок на конкретное время:");
   // fetch list calls
   LISTCALLS = await (await fetchListCalls(SUBSCRIBER)).json() || [];
-  // - This is list calls for current subscriber
-  // printListCalls(LISTCALLS);
-  // createCall(date, time, message, getHelperMessage);
-  listiners.open(updateTitle, updateDescription, fetchListCalls, printListCalls, PARAMS);
+  // - This is a list of calls for the current subscriber. 
+  // - The subscriber is set in the basic settings when calling the widget
+ 
+  listiners.open(updateTitle, updateDescription, fetchListCalls, printListCalls, deleteCall, PARAMS);
   listiners.create(createCall, getHelpMessage, fetchCreateCall, PARAMS);
+  listiners.paginationUp(deleteCall, printListCalls, fetchListCalls, PARAMS);
+  listiners.paginationDown(deleteCall, printListCalls, fetchListCalls, PARAMS);
 });
 
 function createCall(date, time, message, getHelpMessage, fetchCreateCall) {
@@ -74,13 +77,11 @@ function createCall(date, time, message, getHelpMessage, fetchCreateCall) {
   async function create() {
     if (!validation()) return;
 
-      const newCall = await(await fetchCreateCall({
+      await(await fetchCreateCall({
         phone: SUBSCRIBER,
         time: this.formatter(date, time),
         message: message.value,
       })).json();
-
-      console.log(newCall);
 
       return getHelpMessage("Звонок успешно запланирован", null, 'teal');
   }
@@ -92,10 +93,6 @@ function createCall(date, time, message, getHelpMessage, fetchCreateCall) {
   }
 
 }
-function deleteCall() {
-  return {
-    send: async function () {
-      console.log("deleteCall");
-    }
-  };
+async function deleteCall() {
+  console.log("deleteCall");
 }

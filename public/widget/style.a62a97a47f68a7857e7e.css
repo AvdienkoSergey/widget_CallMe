@@ -26,5 +26,14 @@
 .widget-delete-call-button {
   cursor: pointer; }
 
+.paginator-unique-class {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 140px; }
 
-/*# sourceMappingURL=style.d706ac582ac8db7a2af4.css.map*/
+.paginator-unique-class.widget-element-hidden {
+  display: none; }
+
+
+/*# sourceMappingURL=style.a62a97a47f68a7857e7e.css.map*/

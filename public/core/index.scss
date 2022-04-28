@@ -36,3 +36,12 @@
 .widget-delete-call-button {
   cursor: pointer;
 }
+.paginator-unique-class {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 140px;
+}
+.paginator-unique-class.widget-element-hidden {
+  display: none;
+}
