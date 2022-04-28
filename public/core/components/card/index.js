@@ -1,3 +1,4 @@
+import { LISTCALLS, init, testListCall } from "../../store/index.js";
 import { fetchListCalls, fetchCreateCall } from "../../controllers/widget.controller.js";
 import { elementSubscriber } from "./subscriber/index.js";
 import { updateTitle } from  "./title/index.js";
@@ -8,9 +9,10 @@ import { getHelpMessage} from "./helper/index.js";
 import { elementCreateButton, elementOpenButton, elementCloseButton, elementPaginationUp, elementPaginationDown, listiners } from "./buttons-group/index.js";
 
 const SUBSCRIBER = elementSubscriber.getAttribute("data-phone");
-let LISTCALLS = [];
+
+LISTCALLS = init(SUBSCRIBER);
+
 const PARAMS = {
-  LISTCALLS: LISTCALLS,
   SUBSCRIBER: SUBSCRIBER,
   buttons: {  
     open: elementOpenButton,
@@ -34,25 +36,43 @@ document.addEventListener("DOMContentLoaded", async function () {
   updateTitle("Планировщик звонков");
   updateDescription("Вы можете запланировать звонок на конкретное время:");
   // fetch list calls
-  LISTCALLS = await (await fetchListCalls(SUBSCRIBER)).json() || [];
+  LISTCALLS.set(SUBSCRIBER, await (await fetchListCalls(SUBSCRIBER)).json() || []);
   // - This is a list of calls for the current subscriber. 
   // - The subscriber is set in the basic settings when calling the widget
- 
-  listiners.open(updateTitle, updateDescription, fetchListCalls, printListCalls, deleteCall, PARAMS);
-  listiners.create(createCall, getHelpMessage, fetchCreateCall, PARAMS);
-  listiners.paginationUp(deleteCall, printListCalls, fetchListCalls, PARAMS);
-  listiners.paginationDown(deleteCall, printListCalls, fetchListCalls, PARAMS);
+  // testListCall(); // Map(1) {'89607998292' => Array(0)}
+
+  const FUNCTIONS = {
+    updateTitleFunction: updateTitle,
+    updateDescriptionFunction: updateDescription,
+    updateListCalls: updateListCalls,
+    getListCalls: getListCalls,
+    printListCalls: printListCalls,
+    createCall: createCall,
+    deleteCall: deleteCall,
+    getHelpMessage: getHelpMessage,
+    fetchListCalls: fetchListCalls,
+  }
+  listiners.open(FUNCTIONS, PARAMS);
+  listiners.create(FUNCTIONS, PARAMS);
+  listiners.paginationUp(FUNCTIONS, PARAMS);
+  listiners.paginationDown(FUNCTIONS, PARAMS);
 });
 
-function createCall(date, time, message, getHelpMessage, fetchCreateCall) {
+async function updateListCalls() {
+  LISTCALLS.set(SUBSCRIBER, await (await fetchListCalls(SUBSCRIBER)).json() || []);
+  return LISTCALLS;
+}
+function getListCalls() {
+  return LISTCALLS;
+}
+function createCall(date, time, message, getHelpMessage) {
 
   function formatter() {
     const dateArr = date.value.split(".");
     const timeArr = time.value.split(":");
     const dateTime = new Date(dateArr[2], dateArr[1] - 1, dateArr[0], timeArr[0], timeArr[1], 0);
     return dateTime.getTime();
-  }
-
+  };
   function validation() {
 
     if (!date.value.length) {
@@ -73,7 +93,6 @@ function createCall(date, time, message, getHelpMessage, fetchCreateCall) {
     return true;
 
   };
-
   async function create() {
     if (!validation()) return;
 
@@ -82,6 +101,9 @@ function createCall(date, time, message, getHelpMessage, fetchCreateCall) {
         time: this.formatter(date, time),
         message: message.value,
       })).json();
+
+      LISTCALLS.set(SUBSCRIBER, await (await fetchListCalls(SUBSCRIBER)).json() || []);
+      testListCall(); // Map(1) {'89607998292' => Array(1)}
 
       return getHelpMessage("Звонок успешно запланирован", null, 'teal');
   }
@@ -93,6 +115,6 @@ function createCall(date, time, message, getHelpMessage, fetchCreateCall) {
   }
 
 }
-async function deleteCall() {
-  console.log("deleteCall");
+async function deleteCall(id) {
+  console.log(id);
 }

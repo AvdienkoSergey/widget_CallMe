@@ -26,14 +26,14 @@
 .widget-delete-call-button {
   cursor: pointer; }
 
-.paginator-unique-class {
+.widget-paginator-unique-class {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 140px; }
 
-.paginator-unique-class.widget-element-hidden {
+.widget-paginator-unique-class.widget-element-hidden {
   display: none; }
 
 
-/*# sourceMappingURL=style.a62a97a47f68a7857e7e.css.map*/
+/*# sourceMappingURL=style.f749ab15f0682b48d0a0.css.map*/

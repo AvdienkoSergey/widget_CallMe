@@ -2,7 +2,7 @@ const elementSecondScreen = document.querySelector(".widget-second-screen-unique
 const elementListCalls = document.querySelector(".widget-collection-calls-unique-class");
 
 
-function printListCalls(LISTCALLS, deleteCall) {
+function printListCalls(LISTCALLS, SUBSCRIBER, deleteCall) {
 
   function clearListCalls() {
     elementListCalls.innerHTML = "";
@@ -32,15 +32,15 @@ function printListCalls(LISTCALLS, deleteCall) {
     createEventForButton(Call.id, deleteCall);
   }
 
-  if (!LISTCALLS.length) return emptyListCalls();
+  if (!LISTCALLS.get(SUBSCRIBER).length) return emptyListCalls();
   clearListCalls();
 
-  const elementCurrentPage = document.querySelector(".paginator-unique-class__current-page");
+  const PAGE = document.querySelector(".widget-paginator-unique-class__current-page");
 
-  const startIndex = (Number(elementCurrentPage.textContent) - 1) * 4;
-  const stopIndex = 4 * Number(elementCurrentPage.textContent);
+  const startIndex = (Number(PAGE.textContent) - 1) * 4;
+  const stopIndex = 4 * Number(PAGE.textContent);
 
-  const listCalls = LISTCALLS.slice(startIndex, stopIndex);
+  const listCalls = LISTCALLS.get(SUBSCRIBER).slice(startIndex, stopIndex);
 
   // Печать
   for (let index = 0; index < listCalls.length; index++) {
@@ -53,7 +53,7 @@ function createEventForButton(id, deleteCall) {
   const buttonDelete = document.getElementById(`button-delete-call-${id}-unique`);
 
   buttonDelete.addEventListener("click", async () => {
-    await deleteCall();
+    await deleteCall(id);
   });
 }
 

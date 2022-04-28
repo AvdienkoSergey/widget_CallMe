@@ -3,20 +3,20 @@ const elementOpenListCallsButton = document.querySelector(".widget-open-list-cal
 const elementCloseListCallsButton = document.querySelector(".widget-close-list-calls-unique-class");
 
 // Paginator
-const elementPaginator = document.querySelector(".paginator-unique-class");
-const elementLeftButton = document.querySelector(".paginator-unique-class__left-button");
-const elementRightButton = document.querySelector(".paginator-unique-class__right-button");
-const elementCurrentPage = document.querySelector(".paginator-unique-class__current-page");
+const elementPaginator = document.querySelector(".widget-paginator-unique-class");
+const elementLeftButton = document.querySelector(".widget-paginator-unique-class__left-button");
+const elementRightButton = document.querySelector(".widget-paginator-unique-class__right-button");
+const elementCurrentPage = document.querySelector(".widget-paginator-unique-class__current-page");
 
 const listiners = {
-  create: (createCallFunction, getHelpMessage, fetchCreateCall, params) => {
+  create: ({ createCall, getHelpMessage }, params) => {
     params.buttons.create.addEventListener("click", () => {
       const { date, time, message } = params.call;
-      createCallFunction(date, time, message, getHelpMessage, fetchCreateCall, params.LISTCALLS)
+      createCall(date, time, message, getHelpMessage)
         .create()
     });
   },
-  open: (updateTitleFunction, updateDescriptionFunction, fetchListCalls, printListCalls, deleteCall, params) => {
+  open: ({ updateTitleFunction, updateDescriptionFunction, printListCalls, deleteCall, updateListCalls }, params) => {
     params.buttons.open.addEventListener("click", async() => {
       // render new text
       updateTitleFunction("Запланированные звонки");
@@ -30,11 +30,11 @@ const listiners = {
       params.screen.second.classList.remove("widget-element-hidden");
       elementPaginator.classList.remove("widget-element-hidden");
       // add lister
-      listiners.close(updateTitleFunction, updateDescriptionFunction, params);
-      // events
-      const LISTCALLS = await (await fetchListCalls(params.SUBSCRIBER)).json() || [];
+      listiners.close(updateTitleFunction, updateDescriptionFunction, params)
+      // getListCalls
+      const LISTCALLS = await updateListCalls();
       // print
-      printListCalls(LISTCALLS, deleteCall);
+      printListCalls(LISTCALLS, params.SUBSCRIBER, deleteCall);
     });
   },
   close: (updateTitleFunction, updateDescriptionFunction, params) => {
@@ -52,28 +52,29 @@ const listiners = {
       elementPaginator.classList.add("widget-element-hidden");
     });
   },
-  paginationUp: (deleteCall, printListCalls, fetchListCalls, params) => {
+  paginationUp: ({ deleteCall, printListCalls, getListCalls }, params) => {
     params.buttons.paginationUp.addEventListener("click", async() => {
-      const LISTCALLS = await (await fetchListCalls(params.SUBSCRIBER)).json() || [];
+      // getListCalls
+      const LISTCALLS = await getListCalls();
 
       const count = Number(elementCurrentPage.textContent);
-      if (count * 4 > LISTCALLS.length) return;
+      if (count * 4 > LISTCALLS.get(SUBSCRIBER).length) return;
 
       elementCurrentPage.innerText = count + 1;
 
-      printListCalls(LISTCALLS, deleteCall);
+      printListCalls(LISTCALLS, params.SUBSCRIBER, deleteCall);
     });
   },
-  paginationDown: (deleteCall, printListCalls, fetchListCalls, params) => {
+  paginationDown: ({ deleteCall, printListCalls, getListCalls }, params) => {
     params.buttons.paginationDown.addEventListener("click", async() => {
-      const LISTCALLS = await (await fetchListCalls(params.SUBSCRIBER)).json() || [];
+      const LISTCALLS = await getListCalls();
 
       const count = Number(elementCurrentPage.textContent);
       if (!count || count == 1) return;
 
       elementCurrentPage.innerText = count - 1;
 
-      printListCalls(LISTCALLS, deleteCall);
+      printListCalls(LISTCALLS, params.SUBSCRIBER, deleteCall);
     });
   },
 }
