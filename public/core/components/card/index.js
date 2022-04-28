@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     updateDescriptionFunction: updateDescription,
     updateListCalls: updateListCalls,
     getListCalls: getListCalls,
-    printListCalls: printListCalls,
+    updateSecondScreen: printListCalls,
     createCall: createCall,
     deleteCall: deleteCall,
     getHelpMessage: getHelpMessage,
@@ -113,7 +113,6 @@ function createCall(date, time, message, getHelpMessage) {
     validation,
     create,
   }
-
 }
 async function deleteCall(id) {
   console.log(id);

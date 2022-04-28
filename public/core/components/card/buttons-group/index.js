@@ -16,7 +16,7 @@ const listiners = {
         .create()
     });
   },
-  open: ({ updateTitleFunction, updateDescriptionFunction, printListCalls, deleteCall, updateListCalls }, params) => {
+  open: ({ updateTitleFunction, updateDescriptionFunction, updateSecondScreen, deleteCall, updateListCalls }, params) => {
     params.buttons.open.addEventListener("click", async() => {
       // render new text
       updateTitleFunction("Запланированные звонки");
@@ -34,7 +34,7 @@ const listiners = {
       // getListCalls
       const LISTCALLS = await updateListCalls();
       // print
-      printListCalls(LISTCALLS, params.SUBSCRIBER, deleteCall);
+      updateSecondScreen(LISTCALLS, params.SUBSCRIBER, deleteCall);
     });
   },
   close: (updateTitleFunction, updateDescriptionFunction, params) => {
@@ -52,20 +52,21 @@ const listiners = {
       elementPaginator.classList.add("widget-element-hidden");
     });
   },
-  paginationUp: ({ deleteCall, printListCalls, getListCalls }, params) => {
+  paginationUp: ({ deleteCall, updateSecondScreen, getListCalls }, params) => {
     params.buttons.paginationUp.addEventListener("click", async() => {
       // getListCalls
       const LISTCALLS = await getListCalls();
 
       const count = Number(elementCurrentPage.textContent);
-      if (count * 4 > LISTCALLS.get(SUBSCRIBER).length) return;
+      if (count * 4 > LISTCALLS.get(params.SUBSCRIBER).length) return;
+      if (!LISTCALLS.get(params.SUBSCRIBER).length) return;
 
       elementCurrentPage.innerText = count + 1;
 
-      printListCalls(LISTCALLS, params.SUBSCRIBER, deleteCall);
+      updateSecondScreen(LISTCALLS, params.SUBSCRIBER, deleteCall);
     });
   },
-  paginationDown: ({ deleteCall, printListCalls, getListCalls }, params) => {
+  paginationDown: ({ deleteCall, updateSecondScreen, getListCalls }, params) => {
     params.buttons.paginationDown.addEventListener("click", async() => {
       const LISTCALLS = await getListCalls();
 
@@ -74,7 +75,7 @@ const listiners = {
 
       elementCurrentPage.innerText = count - 1;
 
-      printListCalls(LISTCALLS, params.SUBSCRIBER, deleteCall);
+      updateSecondScreen(LISTCALLS, params.SUBSCRIBER, deleteCall);
     });
   },
 }

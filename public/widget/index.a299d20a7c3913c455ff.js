@@ -32,7 +32,7 @@ const listiners = {
   open: ({
     updateTitleFunction,
     updateDescriptionFunction,
-    printListCalls,
+    updateSecondScreen,
     deleteCall,
     updateListCalls
   }, params) => {
@@ -53,7 +53,7 @@ const listiners = {
 
       const LISTCALLS = await updateListCalls(); // print
 
-      printListCalls(LISTCALLS, params.SUBSCRIBER, deleteCall);
+      updateSecondScreen(LISTCALLS, params.SUBSCRIBER, deleteCall);
     });
   },
   close: (updateTitleFunction, updateDescriptionFunction, params) => {
@@ -73,21 +73,22 @@ const listiners = {
   },
   paginationUp: ({
     deleteCall,
-    printListCalls,
+    updateSecondScreen,
     getListCalls
   }, params) => {
     params.buttons.paginationUp.addEventListener("click", async () => {
       // getListCalls
       const LISTCALLS = await getListCalls();
       const count = Number(elementCurrentPage.textContent);
-      if (count * 4 > LISTCALLS.get(SUBSCRIBER).length) return;
+      if (count * 4 > LISTCALLS.get(params.SUBSCRIBER).length) return;
+      if (!LISTCALLS.get(params.SUBSCRIBER).length) return;
       elementCurrentPage.innerText = count + 1;
-      printListCalls(LISTCALLS, params.SUBSCRIBER, deleteCall);
+      updateSecondScreen(LISTCALLS, params.SUBSCRIBER, deleteCall);
     });
   },
   paginationDown: ({
     deleteCall,
-    printListCalls,
+    updateSecondScreen,
     getListCalls
   }, params) => {
     params.buttons.paginationDown.addEventListener("click", async () => {
@@ -95,7 +96,7 @@ const listiners = {
       const count = Number(elementCurrentPage.textContent);
       if (!count || count == 1) return;
       elementCurrentPage.innerText = count - 1;
-      printListCalls(LISTCALLS, params.SUBSCRIBER, deleteCall);
+      updateSecondScreen(LISTCALLS, params.SUBSCRIBER, deleteCall);
     });
   }
 };
@@ -304,7 +305,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     updateDescriptionFunction: _description_index_js__WEBPACK_IMPORTED_MODULE_4__.updateDescription,
     updateListCalls: updateListCalls,
     getListCalls: getListCalls,
-    printListCalls: _second_screen_index_js__WEBPACK_IMPORTED_MODULE_6__.printListCalls,
+    updateSecondScreen: _second_screen_index_js__WEBPACK_IMPORTED_MODULE_6__.printListCalls,
     createCall: createCall,
     deleteCall: deleteCall,
     getHelpMessage: _helper_index_js__WEBPACK_IMPORTED_MODULE_7__.getHelpMessage,
@@ -700,4 +701,4 @@ __webpack_require__.r(__webpack_exports__);
 
 /******/ })()
 ;
-//# sourceMappingURL=index.9913aa82c38523e86619.js.map
+//# sourceMappingURL=index.a299d20a7c3913c455ff.js.map

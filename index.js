@@ -5,6 +5,57 @@ const Http = require("http");
 const Engine = require("consolidate");
 const BodyParser = require('body-parser');
 
+const fs = require('fs');
+const path = require('path')
+
+const notes = __dirname + "/public/widget/index.html";
+console.log(path.dirname(notes)); // /users/flavio
+console.log(path.basename(notes)) // notes.txt
+console.log(path.extname(notes))// .txt
+
+fs.readFile(path.dirname(notes) + '/' + path.basename(notes), "utf8", (err, data) => {
+  if (err) {
+    console.error(err)
+    return
+  }
+  
+  const indexAJs = data.indexOf('<script defer src="')
+  const indexBJs = data.indexOf('<link href="')
+  const indexACss = indexBJs;
+  const indexBCss = data.indexOf('</head><body class="body">');
+
+  const src = {
+    js: data.substring(indexAJs, indexBJs),
+    css: data.substring(indexACss, indexBCss)
+  }
+  const newSrc = {
+    js: (() => {
+      const arr = src.js.split('"');
+      arr[1] = '"/public/widget/' + arr[1] + '"';
+      let str = '';
+      arr.forEach(element => {
+        str += element;
+      });
+      return str;
+    })(),
+    css: (() => {
+      const arr = src.css.split('"');
+      arr[1] = '"/public/widget/' + arr[1] + '"';
+      let str = '';
+      arr.forEach(element => {
+        str += element;
+      });
+      return str;
+    })(),
+  }
+
+  let newData = '';
+  newData = data.replace(src.js, newSrc.js).replace(src.css, newSrc.css);
+
+  fs.writeFileSync(path.dirname(notes) + '/' + path.basename(notes), newData)
+})
+
+
 // Инициализация приложения
 const App = Express();
 // Логирование
