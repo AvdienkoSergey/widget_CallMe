@@ -35,5 +35,10 @@
 .widget-paginator-unique-class.widget-element-hidden {
   display: none; }
 
+.widget-helper-link-unique-class {
+  font-size: 10px;
+  padding: 10px 0px 0px 0px;
+  cursor: pointer; }
 
-/*# sourceMappingURL=style.f749ab15f0682b48d0a0.css.map*/
+
+/*# sourceMappingURL=style.83fde985c1b709b569b5.css.map*/

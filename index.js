@@ -28,6 +28,10 @@ fs.readFile(path.dirname(notes) + '/' + path.basename(notes), "utf8", (err, data
     js: data.substring(indexAJs, indexBJs),
     css: data.substring(indexACss, indexBCss)
   }
+
+  // if (src.js.indexOf('/public/widget/')) return;
+  // if (src.css.indexOf('/public/widget/')) return;
+
   const newSrc = {
     js: (() => {
       const arr = src.js.split('"');

@@ -88,7 +88,7 @@ function createCall(date, time, message, getHelpMessage) {
       return getHelpMessage("Сократите свое голосовое сообщение", message);
     }
     if (formatter(date, time) < Date.now() + 1000 * 60 * 60 * 3) {
-      return getHelpMessage("Для валидации голосового сообщения требуется больше времени (3 часа)", time);
+      return getHelpMessage("Время для валидации (3 часа)", time);
     }
     return true;
 

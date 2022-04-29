@@ -199,8 +199,9 @@ const helperMessageComponent = document.querySelector(".widget-helper-message-un
 
 function getHelpMessage(text, element, color = "red") {
   helperComponent.classList.add("widget-element-visible", `${color}`, "lighten-5", `${color}-text`);
-  helperMessageComponent.classList.add("widget-element-visible");
-  helperMessageComponent.innerHTML = `
+  helperMessageComponent.classList.add("widget-element-visible"); // innerHTML in helperMessageComponent
+
+  const defaultMessage = `
     <span class="badge">
       <i class="material-icons ${color}-text widget-close-button">
         cancel
@@ -208,7 +209,18 @@ function getHelpMessage(text, element, color = "red") {
     </span>
     <span>${text}</span>
   `;
-  element ? element.focus() : undefined;
+  const linkMessage = `
+    <span class="badge">
+      <i class="material-icons ${color}-text widget-close-button">
+        cancel
+      </i>
+    </span>
+    <span>${text} <a class="widget-helper-link-unique-class">Подробнее</a></span>
+  `;
+  helperMessageComponent.innerHTML = text.indexOf('(3 часа)') !== -1 ? linkMessage : defaultMessage;
+  element ? element.focus() : undefined; // add listers
+
+  text.indexOf('(3 часа)') !== -1 ? initLink() : undefined;
   initCloseButton();
 
   function initCloseButton() {
@@ -228,6 +240,18 @@ function getHelpMessage(text, element, color = "red") {
       once: true
     });
     elementCloseListCallsButton.addEventListener("click", close, {
+      once: true
+    });
+  }
+
+  function initLink() {
+    const elementLink = document.querySelector(".widget-helper-link-unique-class");
+
+    function link() {
+      console.log('В разработке. Вызов модального окна или третий скрин');
+    }
+
+    elementLink.addEventListener("click", link, {
       once: true
     });
   }
@@ -354,7 +378,7 @@ function createCall(date, time, message, getHelpMessage) {
     }
 
     if (formatter(date, time) < Date.now() + 1000 * 60 * 60 * 3) {
-      return getHelpMessage("Для валидации голосового сообщения требуется больше времени (3 часа)", time);
+      return getHelpMessage("Время для валидации (3 часа)", time);
     }
 
     return true;
@@ -701,4 +725,4 @@ __webpack_require__.r(__webpack_exports__);
 
 /******/ })()
 ;
-//# sourceMappingURL=index.a299d20a7c3913c455ff.js.map
+//# sourceMappingURL=index.22db5951e7c2f2cbf466.js.map
