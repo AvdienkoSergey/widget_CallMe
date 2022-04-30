@@ -4,7 +4,7 @@
   "description": "You can order a call at the right time",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev:server": "nodemon index.js",
     "dev:client": "cross-env NODE_ENV=development webpack --mode development",
     "build:client": "cross-env NODE_ENV=production webpack --mode production",
@@ -23,17 +23,24 @@
   },
   "homepage": "https://github.com/AvdienkoSergey/widget_CallMe#readme",
   "dependencies": {
+    "@hapi/boom": "^9.1.4",
     "babel-loader": "^8.2.2",
+    "body-parser": "^1.20.0",
     "clean-webpack-plugin": "*",
     "consolidate": "^0.16.0",
     "copy-webpack-plugin": "^8.1.1",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "css-loader": "^5.2.2",
     "csv-loader": "^3.0.3",
+    "express": "^4.17.3",
+    "express-promise-router": "^4.1.0",
     "file-loader": "^6.2.0",
     "html-loader": "^2.1.2",
     "html-webpack-plugin": "^5.3.1",
+    "jest": "^28.0.3",
     "mini-css-extract-plugin": "^1.5.0",
+    "morgan": "^1.10.0",
     "mustache": "^4.2.0",
     "node-sass": "^6.0.1",
     "path": "^0.12.7",
@@ -46,17 +53,12 @@
     "webpack": "^5.33.2",
     "webpack-cli": "^4.6.0",
     "webpack-dev-server": "^3.11.2",
-    "xml-loader": "^1.2.1",
-    "express": "^4.17.3",
-    "express-promise-router": "^4.1.0",
-    "morgan": "^1.10.0",
-    "@hapi/boom": "^9.1.4",
-    "body-parser": "^1.20.0",
-    "cors": "^2.8.5"
+    "xml-loader": "^1.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.14.8",
     "dotenv": "^10.0.0",
+    "jsdom": "^19.0.0",
     "nodemon": "^2.0.12"
   }
 }

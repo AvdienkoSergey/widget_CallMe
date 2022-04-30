@@ -1,6 +1,6 @@
-import { LISTCALLS, init, testListCall } from "../../store/index.js";
+import { LISTCALLS, init, printListCall } from "../../store/index.js";
 import { fetchListCalls, fetchCreateCall } from "../../controllers/widget.controller.js";
-import { elementSubscriber } from "./subscriber/index.js";
+import { subscriberPhone } from "./subscriber/index.js";
 import { updateTitle } from  "./title/index.js";
 import { updateDescription } from "./description/index.js";
 import { elementFirstScreen, elementDate, elementTime, elementMessage } from "./first-screen/index.js";
@@ -8,7 +8,7 @@ import { elementSecondScreen, printListCalls } from "./second-screen/index.js";
 import { getHelpMessage} from "./helper/index.js";
 import { elementCreateButton, elementOpenButton, elementCloseButton, elementPaginationUp, elementPaginationDown, listiners } from "./buttons-group/index.js";
 
-const SUBSCRIBER = elementSubscriber.getAttribute("data-phone");
+const SUBSCRIBER = subscriberPhone;
 
 LISTCALLS = init(SUBSCRIBER);
 
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   LISTCALLS.set(SUBSCRIBER, await (await fetchListCalls(SUBSCRIBER)).json() || []);
   // - This is a list of calls for the current subscriber. 
   // - The subscriber is set in the basic settings when calling the widget
-  // testListCall(); // Map(1) {'89607998292' => Array(0)}
+  // printListCall(); // Map(1) {'89607998292' => Array(0)}
 
   const FUNCTIONS = {
     updateTitleFunction: updateTitle,
@@ -103,7 +103,7 @@ function createCall(date, time, message, getHelpMessage) {
       })).json();
 
       LISTCALLS.set(SUBSCRIBER, await (await fetchListCalls(SUBSCRIBER)).json() || []);
-      testListCall(); // Map(1) {'89607998292' => Array(1)}
+      printListCall(); // Map(1) {'89607998292' => Array(1)}
 
       return getHelpMessage("Звонок успешно запланирован", null, 'teal');
   }

@@ -6,12 +6,12 @@ function init(SUBSCRIBER) {
   return LISTCALLS;
 }
 
-function testListCall() {
+function printListCall() {
   console.log(LISTCALLS)
 }
 
 module.exports = {
   LISTCALLS,
   init,
-  testListCall
+  printListCall
 }

@@ -35,6 +35,7 @@ const CRUD = ( ModelVoiceMessage, Store = new Map() ) => ({
       const Call = ({ time }) => {
         return {
           create: (message) => {
+
             const formatTime = () => {
               const timeStyle = new Intl.DateTimeFormat("ru", { timeStyle: "short" }).format(time);
               const dateStyle = new Intl.DateTimeFormat("ru", { dateStyle: "short" }).format(time)
@@ -44,6 +45,7 @@ const CRUD = ( ModelVoiceMessage, Store = new Map() ) => ({
                 timeString: timeString,
               }
             }
+
             return {
               id: Date.now(),
               time: formatTime().time,

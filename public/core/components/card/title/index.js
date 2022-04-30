@@ -1,7 +1,9 @@
-const elementTitle = document.querySelector(".widget-title-unique-class");
+const elementTitleClass = ".widget-title-unique-class";
+const elementTitle = document.querySelector(elementTitleClass);
 
 const updateTitle = (newTitle) => {
   elementTitle.innerText = newTitle;
+  return elementTitle.innerText;
 }
 
-module.exports = { elementTitle, updateTitle }
+module.exports = { updateTitle }

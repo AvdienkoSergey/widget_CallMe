@@ -117,10 +117,12 @@ module.exports = {
   \**********************************************************/
 /***/ ((module) => {
 
-const elementDescription = document.querySelector(".widget-description-unique-class");
+const elementDescriptionClass = ".widget-title-unique-class";
+const elementDescription = document.querySelector(elementDescriptionClass);
 
 const updateDescription = newDescription => {
   elementDescription.innerText = newDescription;
+  return elementDescription.innerText;
 };
 
 module.exports = {
@@ -295,7 +297,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const SUBSCRIBER = _subscriber_index_js__WEBPACK_IMPORTED_MODULE_2__.elementSubscriber.getAttribute("data-phone");
+const SUBSCRIBER = _subscriber_index_js__WEBPACK_IMPORTED_MODULE_2__.subscriberPhone;
 _store_index_js__WEBPACK_IMPORTED_MODULE_0__.LISTCALLS = (0,_store_index_js__WEBPACK_IMPORTED_MODULE_0__.init)(SUBSCRIBER);
 const PARAMS = {
   SUBSCRIBER: SUBSCRIBER,
@@ -322,7 +324,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   _store_index_js__WEBPACK_IMPORTED_MODULE_0__.LISTCALLS.set(SUBSCRIBER, (await (await (0,_controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_1__.fetchListCalls)(SUBSCRIBER)).json()) || []); // - This is a list of calls for the current subscriber. 
   // - The subscriber is set in the basic settings when calling the widget
-  // testListCall(); // Map(1) {'89607998292' => Array(0)}
+  // printListCall(); // Map(1) {'89607998292' => Array(0)}
 
   const FUNCTIONS = {
     updateTitleFunction: _title_index_js__WEBPACK_IMPORTED_MODULE_3__.updateTitle,
@@ -394,7 +396,7 @@ function createCall(date, time, message, getHelpMessage) {
       message: message.value
     })).json();
     _store_index_js__WEBPACK_IMPORTED_MODULE_0__.LISTCALLS.set(SUBSCRIBER, (await (await (0,_controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_1__.fetchListCalls)(SUBSCRIBER)).json()) || []);
-    (0,_store_index_js__WEBPACK_IMPORTED_MODULE_0__.testListCall)(); // Map(1) {'89607998292' => Array(1)}
+    (0,_store_index_js__WEBPACK_IMPORTED_MODULE_0__.printListCall)(); // Map(1) {'89607998292' => Array(1)}
 
     return getHelpMessage("Звонок успешно запланирован", null, 'teal');
   }
@@ -498,8 +500,10 @@ module.exports = {
 /***/ ((module) => {
 
 const elementWidgetSettings = document.querySelector(".widget-settings-unique-class");
+const SUBSCRIBER = elementWidgetSettings.getAttribute("data-phone") || "[ВНИМАНИЕ]: Не определен номер";
 module.exports = {
-  elementSubscriber: elementWidgetSettings
+  elementSubscriber: elementWidgetSettings,
+  subscriberPhone: SUBSCRIBER
 };
 
 /***/ }),
@@ -510,14 +514,15 @@ module.exports = {
   \****************************************************/
 /***/ ((module) => {
 
-const elementTitle = document.querySelector(".widget-title-unique-class");
+const elementTitleClass = ".widget-title-unique-class";
+const elementTitle = document.querySelector(elementTitleClass);
 
 const updateTitle = newTitle => {
   elementTitle.innerText = newTitle;
+  return elementTitle.innerText;
 };
 
 module.exports = {
-  elementTitle,
   updateTitle
 };
 
@@ -614,14 +619,14 @@ function init(SUBSCRIBER) {
   return LISTCALLS;
 }
 
-function testListCall() {
+function printListCall() {
   console.log(LISTCALLS);
 }
 
 module.exports = {
   LISTCALLS,
   init,
-  testListCall
+  printListCall
 };
 
 /***/ }),
@@ -725,4 +730,4 @@ __webpack_require__.r(__webpack_exports__);
 
 /******/ })()
 ;
-//# sourceMappingURL=index.22db5951e7c2f2cbf466.js.map
+//# sourceMappingURL=index.69d29aaef221dd8ca315.js.map
