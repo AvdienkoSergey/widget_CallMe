@@ -7,7 +7,6 @@ class VoiceMessage {
     this.subscriber = '';
     this.message = '';
   }
-
   setSubscriber(phone) {
     this.subscriber = phone;
   }

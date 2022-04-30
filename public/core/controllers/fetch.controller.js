@@ -23,13 +23,18 @@ const request = async ({
       break;
 
     case "POST":
-      response = await fetch(API_URL + url, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json;charset=utf-8"
-        },
-        body: JSON.stringify(data),
-      });
+      try {
+        response = await fetch(API_URL + url, {
+          method: method,
+          headers: {
+            "Content-Type": "application/json;charset=utf-8"
+          },
+          body: JSON.stringify(data),
+        });
+      } catch (error) {
+        console.log(error)
+      }
+      break;
   }
 
   return response;

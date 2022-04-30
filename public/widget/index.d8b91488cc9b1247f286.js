@@ -18,7 +18,9 @@ const elementCurrentPage = document.querySelector(".widget-paginator-unique-clas
 const listiners = {
   create: ({
     createCall,
-    getHelpMessage
+    getHelpMessage,
+    fetchCreateCall,
+    fetchListCalls
   }, params) => {
     params.buttons.create.addEventListener("click", () => {
       const {
@@ -26,20 +28,23 @@ const listiners = {
         time,
         message
       } = params.call;
-      createCall(date, time, message, getHelpMessage).create();
+      const {
+        SUBSCRIBER
+      } = params;
+      createCall(getHelpMessage, fetchCreateCall, fetchListCalls, date, time, message, SUBSCRIBER).create();
     });
   },
   open: ({
-    updateTitleFunction,
-    updateDescriptionFunction,
+    updateText,
     updateSecondScreen,
     deleteCall,
-    updateListCalls
+    updateListCalls,
+    fetchListCalls
   }, params) => {
     params.buttons.open.addEventListener("click", async () => {
       // render new text
-      updateTitleFunction("Запланированные звонки");
-      updateDescriptionFunction("Вы можете удалить звонок из списка, если в нем нет необходиомсти:"); // addClass
+      updateText("Запланированные звонки", params.title);
+      updateText("Вы можете удалить звонок из списка, если в нем нет необходиомсти:", params.description); // addClass
 
       params.buttons.create.classList.add("widget-element-hidden");
       params.buttons.open.classList.add("widget-element-hidden");
@@ -49,18 +54,18 @@ const listiners = {
       params.screen.second.classList.remove("widget-element-hidden");
       elementPaginator.classList.remove("widget-element-hidden"); // add lister
 
-      listiners.close(updateTitleFunction, updateDescriptionFunction, params); // getListCalls
+      listiners.close(updateText, params); // getListCalls
 
-      const LISTCALLS = await updateListCalls(); // print
+      const LISTCALLS = await updateListCalls(fetchListCalls, params.SUBSCRIBER); // print
 
       updateSecondScreen(LISTCALLS, params.SUBSCRIBER, deleteCall);
     });
   },
-  close: (updateTitleFunction, updateDescriptionFunction, params) => {
+  close: (updateText, params) => {
     params.buttons.close.addEventListener("click", () => {
       // render new text
-      updateTitleFunction("Планировщик звонков");
-      updateDescriptionFunction("Вы можете запланировать звонок на конкретное время:"); // addClass
+      updateText("Планировщик звонков", params.title);
+      updateText("Вы можете запланировать звонок на конкретное время:", params.description); // addClass
 
       params.buttons.create.classList.remove("widget-element-hidden");
       params.buttons.open.classList.remove("widget-element-hidden");
@@ -117,16 +122,10 @@ module.exports = {
   \**********************************************************/
 /***/ ((module) => {
 
-const elementDescriptionClass = ".widget-title-unique-class";
+const elementDescriptionClass = ".widget-description-unique-class";
 const elementDescription = document.querySelector(elementDescriptionClass);
-
-const updateDescription = newDescription => {
-  elementDescription.innerText = newDescription;
-  return elementDescription.innerText;
-};
-
 module.exports = {
-  updateDescription
+  elementDescription
 };
 
 /***/ }),
@@ -275,19 +274,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _store_index_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_store_index_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../controllers/widget.controller.js */ "./public/core/controllers/widget.controller.js");
 /* harmony import */ var _controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _subscriber_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./subscriber/index.js */ "./public/core/components/card/subscriber/index.js");
-/* harmony import */ var _subscriber_index_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_subscriber_index_js__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _title_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./title/index.js */ "./public/core/components/card/title/index.js");
-/* harmony import */ var _title_index_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_title_index_js__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _description_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./description/index.js */ "./public/core/components/card/description/index.js");
-/* harmony import */ var _description_index_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_description_index_js__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _first_screen_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./first-screen/index.js */ "./public/core/components/card/first-screen/index.js");
-/* harmony import */ var _first_screen_index_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_first_screen_index_js__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _second_screen_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./second-screen/index.js */ "./public/core/components/card/second-screen/index.js");
-/* harmony import */ var _second_screen_index_js__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_second_screen_index_js__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _helper_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./helper/index.js */ "./public/core/components/card/helper/index.js");
-/* harmony import */ var _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./buttons-group/index.js */ "./public/core/components/card/buttons-group/index.js");
-/* harmony import */ var _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_buttons_group_index_js__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _src_udpadeText_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./src/udpadeText.js */ "./public/core/components/card/src/udpadeText.js");
+/* harmony import */ var _src_udpadeText_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_src_udpadeText_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _subscriber_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./subscriber/index.js */ "./public/core/components/card/subscriber/index.js");
+/* harmony import */ var _subscriber_index_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_subscriber_index_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _title_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./title/index.js */ "./public/core/components/card/title/index.js");
+/* harmony import */ var _title_index_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_title_index_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _description_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./description/index.js */ "./public/core/components/card/description/index.js");
+/* harmony import */ var _description_index_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_description_index_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _first_screen_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./first-screen/index.js */ "./public/core/components/card/first-screen/index.js");
+/* harmony import */ var _first_screen_index_js__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_first_screen_index_js__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _second_screen_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./second-screen/index.js */ "./public/core/components/card/second-screen/index.js");
+/* harmony import */ var _second_screen_index_js__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_second_screen_index_js__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _helper_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./helper/index.js */ "./public/core/components/card/helper/index.js");
+/* harmony import */ var _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./buttons-group/index.js */ "./public/core/components/card/buttons-group/index.js");
+/* harmony import */ var _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_buttons_group_index_js__WEBPACK_IMPORTED_MODULE_9__);
 
 
 
@@ -297,120 +298,55 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const SUBSCRIBER = _subscriber_index_js__WEBPACK_IMPORTED_MODULE_2__.subscriberPhone;
+
+const SUBSCRIBER = _subscriber_index_js__WEBPACK_IMPORTED_MODULE_3__.elementSubscriber.getAttribute("data-phone") || "[ВНИМАНИЕ]: Не определен номер";
+;
 _store_index_js__WEBPACK_IMPORTED_MODULE_0__.LISTCALLS = (0,_store_index_js__WEBPACK_IMPORTED_MODULE_0__.init)(SUBSCRIBER);
-const PARAMS = {
-  SUBSCRIBER: SUBSCRIBER,
-  buttons: {
-    open: _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_8__.elementOpenButton,
-    close: _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_8__.elementCloseButton,
-    create: _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_8__.elementCreateButton,
-    paginationUp: _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_8__.elementPaginationUp,
-    paginationDown: _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_8__.elementPaginationDown
-  },
-  screen: {
-    first: _first_screen_index_js__WEBPACK_IMPORTED_MODULE_5__.elementFirstScreen,
-    second: _second_screen_index_js__WEBPACK_IMPORTED_MODULE_6__.elementSecondScreen
-  },
-  call: {
-    date: _first_screen_index_js__WEBPACK_IMPORTED_MODULE_5__.elementDate,
-    time: _first_screen_index_js__WEBPACK_IMPORTED_MODULE_5__.elementTime,
-    message: _first_screen_index_js__WEBPACK_IMPORTED_MODULE_5__.elementMessage
-  }
-};
 document.addEventListener("DOMContentLoaded", async function () {
-  (0,_title_index_js__WEBPACK_IMPORTED_MODULE_3__.updateTitle)("Планировщик звонков");
-  (0,_description_index_js__WEBPACK_IMPORTED_MODULE_4__.updateDescription)("Вы можете запланировать звонок на конкретное время:"); // fetch list calls
+  (0,_src_udpadeText_js__WEBPACK_IMPORTED_MODULE_2__.updateText)("Планировщик звонков", _title_index_js__WEBPACK_IMPORTED_MODULE_4__.elementTitle);
+  (0,_src_udpadeText_js__WEBPACK_IMPORTED_MODULE_2__.updateText)("Вы можете запланировать звонок на конкретное время:", _description_index_js__WEBPACK_IMPORTED_MODULE_5__.elementDescription); // fetch list calls
 
-  _store_index_js__WEBPACK_IMPORTED_MODULE_0__.LISTCALLS.set(SUBSCRIBER, (await (await (0,_controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_1__.fetchListCalls)(SUBSCRIBER)).json()) || []); // - This is a list of calls for the current subscriber. 
+  _store_index_js__WEBPACK_IMPORTED_MODULE_0__.LISTCALLS.set(SUBSCRIBER, (await (await (0,_controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_1__.fetchListCalls)(SUBSCRIBER)).json()) || []); // - This is a list of calls for the current subscriber.
+  // - Map(1) = (LISTCALLS) {'your number phone = (SUBSCRIBER)' => Array(0) = (CALLS)} 
   // - The subscriber is set in the basic settings when calling the widget
-  // printListCall(); // Map(1) {'89607998292' => Array(0)}
 
+  const PARAMS = {
+    SUBSCRIBER: SUBSCRIBER,
+    title: _title_index_js__WEBPACK_IMPORTED_MODULE_4__.elementTitle,
+    description: _description_index_js__WEBPACK_IMPORTED_MODULE_5__.elementDescription,
+    buttons: {
+      open: _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_9__.elementOpenButton,
+      close: _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_9__.elementCloseButton,
+      create: _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_9__.elementCreateButton,
+      paginationUp: _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_9__.elementPaginationUp,
+      paginationDown: _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_9__.elementPaginationDown
+    },
+    screen: {
+      first: _first_screen_index_js__WEBPACK_IMPORTED_MODULE_6__.elementFirstScreen,
+      second: _second_screen_index_js__WEBPACK_IMPORTED_MODULE_7__.elementSecondScreen
+    },
+    call: {
+      date: _first_screen_index_js__WEBPACK_IMPORTED_MODULE_6__.elementDate,
+      time: _first_screen_index_js__WEBPACK_IMPORTED_MODULE_6__.elementTime,
+      message: _first_screen_index_js__WEBPACK_IMPORTED_MODULE_6__.elementMessage
+    }
+  };
   const FUNCTIONS = {
-    updateTitleFunction: _title_index_js__WEBPACK_IMPORTED_MODULE_3__.updateTitle,
-    updateDescriptionFunction: _description_index_js__WEBPACK_IMPORTED_MODULE_4__.updateDescription,
-    updateListCalls: updateListCalls,
-    getListCalls: getListCalls,
-    updateSecondScreen: _second_screen_index_js__WEBPACK_IMPORTED_MODULE_6__.printListCalls,
-    createCall: createCall,
-    deleteCall: deleteCall,
-    getHelpMessage: _helper_index_js__WEBPACK_IMPORTED_MODULE_7__.getHelpMessage,
-    fetchListCalls: _controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_1__.fetchListCalls
+    updateText: _src_udpadeText_js__WEBPACK_IMPORTED_MODULE_2__.updateText,
+    updateListCalls: _store_index_js__WEBPACK_IMPORTED_MODULE_0__.updateListCalls,
+    getListCalls: _store_index_js__WEBPACK_IMPORTED_MODULE_0__.getListCalls,
+    updateSecondScreen: _second_screen_index_js__WEBPACK_IMPORTED_MODULE_7__.printListCalls,
+    createCall: _store_index_js__WEBPACK_IMPORTED_MODULE_0__.createCall,
+    deleteCall: _store_index_js__WEBPACK_IMPORTED_MODULE_0__.deleteCall,
+    getHelpMessage: _helper_index_js__WEBPACK_IMPORTED_MODULE_8__.getHelpMessage,
+    fetchListCalls: _controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_1__.fetchListCalls,
+    fetchCreateCall: _controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_1__.fetchCreateCall
   };
-  _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_8__.listiners.open(FUNCTIONS, PARAMS);
-  _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_8__.listiners.create(FUNCTIONS, PARAMS);
-  _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_8__.listiners.paginationUp(FUNCTIONS, PARAMS);
-  _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_8__.listiners.paginationDown(FUNCTIONS, PARAMS);
+  _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_9__.listiners.open(FUNCTIONS, PARAMS);
+  _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_9__.listiners.create(FUNCTIONS, PARAMS);
+  _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_9__.listiners.paginationUp(FUNCTIONS, PARAMS);
+  _buttons_group_index_js__WEBPACK_IMPORTED_MODULE_9__.listiners.paginationDown(FUNCTIONS, PARAMS);
 });
-
-async function updateListCalls() {
-  _store_index_js__WEBPACK_IMPORTED_MODULE_0__.LISTCALLS.set(SUBSCRIBER, (await (await (0,_controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_1__.fetchListCalls)(SUBSCRIBER)).json()) || []);
-  return _store_index_js__WEBPACK_IMPORTED_MODULE_0__.LISTCALLS;
-}
-
-function getListCalls() {
-  return _store_index_js__WEBPACK_IMPORTED_MODULE_0__.LISTCALLS;
-}
-
-function createCall(date, time, message, getHelpMessage) {
-  function formatter() {
-    const dateArr = date.value.split(".");
-    const timeArr = time.value.split(":");
-    const dateTime = new Date(dateArr[2], dateArr[1] - 1, dateArr[0], timeArr[0], timeArr[1], 0);
-    return dateTime.getTime();
-  }
-
-  ;
-
-  function validation() {
-    if (!date.value.length) {
-      return getHelpMessage("Укажите дату", date);
-    }
-
-    if (!time.value.length) {
-      return getHelpMessage("Укажите время", time);
-    }
-
-    if (!message.value.length) {
-      return getHelpMessage("Напишите сообщение", message);
-    }
-
-    if (message.value.length > 60) {
-      return getHelpMessage("Сократите свое голосовое сообщение", message);
-    }
-
-    if (formatter(date, time) < Date.now() + 1000 * 60 * 60 * 3) {
-      return getHelpMessage("Время для валидации (3 часа)", time);
-    }
-
-    return true;
-  }
-
-  ;
-
-  async function create() {
-    if (!validation()) return;
-    await (await (0,_controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_1__.fetchCreateCall)({
-      phone: SUBSCRIBER,
-      time: this.formatter(date, time),
-      message: message.value
-    })).json();
-    _store_index_js__WEBPACK_IMPORTED_MODULE_0__.LISTCALLS.set(SUBSCRIBER, (await (await (0,_controllers_widget_controller_js__WEBPACK_IMPORTED_MODULE_1__.fetchListCalls)(SUBSCRIBER)).json()) || []);
-    (0,_store_index_js__WEBPACK_IMPORTED_MODULE_0__.printListCall)(); // Map(1) {'89607998292' => Array(1)}
-
-    return getHelpMessage("Звонок успешно запланирован", null, 'teal');
-  }
-
-  return {
-    formatter,
-    validation,
-    create
-  };
-}
-
-async function deleteCall(id) {
-  console.log(id);
-}
 
 /***/ }),
 
@@ -493,6 +429,23 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./public/core/components/card/src/udpadeText.js":
+/*!*******************************************************!*\
+  !*** ./public/core/components/card/src/udpadeText.js ***!
+  \*******************************************************/
+/***/ ((module) => {
+
+const updateText = (newText, element) => {
+  element.innerText = newText;
+  return element.innerText;
+};
+
+module.exports = {
+  updateText
+};
+
+/***/ }),
+
 /***/ "./public/core/components/card/subscriber/index.js":
 /*!*********************************************************!*\
   !*** ./public/core/components/card/subscriber/index.js ***!
@@ -500,10 +453,8 @@ module.exports = {
 /***/ ((module) => {
 
 const elementWidgetSettings = document.querySelector(".widget-settings-unique-class");
-const SUBSCRIBER = elementWidgetSettings.getAttribute("data-phone") || "[ВНИМАНИЕ]: Не определен номер";
 module.exports = {
-  elementSubscriber: elementWidgetSettings,
-  subscriberPhone: SUBSCRIBER
+  elementSubscriber: elementWidgetSettings
 };
 
 /***/ }),
@@ -516,14 +467,8 @@ module.exports = {
 
 const elementTitleClass = ".widget-title-unique-class";
 const elementTitle = document.querySelector(elementTitleClass);
-
-const updateTitle = newTitle => {
-  elementTitle.innerText = newTitle;
-  return elementTitle.innerText;
-};
-
 module.exports = {
-  updateTitle
+  elementTitle
 };
 
 /***/ }),
@@ -559,13 +504,19 @@ const request = async ({
       break;
 
     case "POST":
-      response = await fetch(API_URL + url, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json;charset=utf-8"
-        },
-        body: JSON.stringify(data)
-      });
+      try {
+        response = await fetch(API_URL + url, {
+          method: method,
+          headers: {
+            "Content-Type": "application/json;charset=utf-8"
+          },
+          body: JSON.stringify(data)
+        });
+      } catch (error) {
+        console.log(error);
+      }
+
+      break;
   }
 
   return response;
@@ -614,19 +565,108 @@ module.exports = {
 
 const LISTCALLS = new Map(); // - subscriber: [ Call ]
 
-function init(SUBSCRIBER) {
-  LISTCALLS.set(SUBSCRIBER.toString(), []);
-  return LISTCALLS;
+function init(SUBSCRIBER, listCalls = LISTCALLS) {
+  listCalls.set(SUBSCRIBER.toString(), []);
+  return listCalls;
 }
 
-function printListCall() {
-  console.log(LISTCALLS);
+function getListCalls(listCalls = LISTCALLS) {
+  return listCalls;
+}
+
+async function updateListCalls(fetchListCalls, SUBSCRIBER, listCalls = LISTCALLS) {
+  listCalls.set(SUBSCRIBER, (await (await fetchListCalls(SUBSCRIBER)).json()) || []);
+  return listCalls;
+}
+
+function createCall(getHelpMessage, fetchCreateCall, fetchListCalls, date, time, message, SUBSCRIBER, listCalls = LISTCALLS) {
+  function formatter(date, time) {
+    const dateArr = date.value.split(".");
+    const timeArr = time.value.split(":");
+    const dateTime = new Date(dateArr[2], dateArr[1] - 1, dateArr[0], timeArr[0], timeArr[1], 0);
+    return dateTime.getTime();
+  }
+
+  ;
+
+  function validation(date, time, message, getHelpMessage) {
+    if (!date.value.length) {
+      getHelpMessage("Укажите дату", date);
+      return false;
+    }
+
+    if (!Array.isArray(date.value.split(".")) || date.value.split(".").length !== 3) {
+      getHelpMessage("Укажите дату в формате 01.01.2000", date);
+      return false;
+    }
+
+    if (!time.value.length) {
+      getHelpMessage("Укажите время", time);
+      return false;
+    }
+
+    if (!Array.isArray(time.value.split(":")) || time.value.split(":").length !== 2) {
+      getHelpMessage("Укажите время в формате 09:00", time);
+      return false;
+    }
+
+    if (!message.value.length) {
+      getHelpMessage("Напишите сообщение", message);
+      return false;
+    }
+
+    if (message.value.length > 60) {
+      getHelpMessage("Сократите свое голосовое сообщение", message);
+      return false;
+    }
+
+    if (formatter(date, time) < Date.now() + 1000 * 60 * 60 * 3) {
+      getHelpMessage("Время для валидации (3 часа)", time);
+      return false;
+    }
+
+    return true;
+  }
+
+  ;
+
+  async function create() {
+    if (!validation(date, time, message, getHelpMessage)) return false;
+
+    try {
+      await (await fetchCreateCall({
+        phone: SUBSCRIBER,
+        time: this.formatter(date, time),
+        message: message.value
+      })).json();
+      listCalls.set(SUBSCRIBER, (await (await fetchListCalls(SUBSCRIBER)).json()) || []); // Map(1) {'your phone number' => Array(1)}
+
+      getHelpMessage("Звонок успешно запланирован", null, 'teal');
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  return {
+    formatter,
+    validation,
+    create
+  };
+}
+
+async function deleteCall(id) {
+  console.log(id);
 }
 
 module.exports = {
   LISTCALLS,
   init,
-  printListCall
+  getListCalls,
+  updateListCalls,
+  createCall,
+  deleteCall
 };
 
 /***/ }),
@@ -730,4 +770,4 @@ __webpack_require__.r(__webpack_exports__);
 
 /******/ })()
 ;
-//# sourceMappingURL=index.69d29aaef221dd8ca315.js.map
+//# sourceMappingURL=index.d8b91488cc9b1247f286.js.map

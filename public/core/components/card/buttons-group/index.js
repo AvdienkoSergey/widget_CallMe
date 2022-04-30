@@ -9,18 +9,19 @@ const elementRightButton = document.querySelector(".widget-paginator-unique-clas
 const elementCurrentPage = document.querySelector(".widget-paginator-unique-class__current-page");
 
 const listiners = {
-  create: ({ createCall, getHelpMessage }, params) => {
+  create: ({ createCall, getHelpMessage, fetchCreateCall, fetchListCalls }, params) => {
     params.buttons.create.addEventListener("click", () => {
       const { date, time, message } = params.call;
-      createCall(date, time, message, getHelpMessage)
+      const { SUBSCRIBER } = params;
+      createCall(getHelpMessage, fetchCreateCall, fetchListCalls, date, time, message, SUBSCRIBER)
         .create()
     });
   },
-  open: ({ updateTitleFunction, updateDescriptionFunction, updateSecondScreen, deleteCall, updateListCalls }, params) => {
+  open: ({ updateText, updateSecondScreen, deleteCall, updateListCalls, fetchListCalls }, params) => {
     params.buttons.open.addEventListener("click", async() => {
       // render new text
-      updateTitleFunction("Запланированные звонки");
-      updateDescriptionFunction("Вы можете удалить звонок из списка, если в нем нет необходиомсти:")
+      updateText("Запланированные звонки", params.title);
+      updateText("Вы можете удалить звонок из списка, если в нем нет необходиомсти:", params.description);
       // addClass
       params.buttons.create.classList.add("widget-element-hidden");
       params.buttons.open.classList.add("widget-element-hidden");
@@ -30,18 +31,18 @@ const listiners = {
       params.screen.second.classList.remove("widget-element-hidden");
       elementPaginator.classList.remove("widget-element-hidden");
       // add lister
-      listiners.close(updateTitleFunction, updateDescriptionFunction, params)
+      listiners.close(updateText, params)
       // getListCalls
-      const LISTCALLS = await updateListCalls();
+      const LISTCALLS = await updateListCalls(fetchListCalls, params.SUBSCRIBER);
       // print
       updateSecondScreen(LISTCALLS, params.SUBSCRIBER, deleteCall);
     });
   },
-  close: (updateTitleFunction, updateDescriptionFunction, params) => {
+  close: (updateText, params) => {
     params.buttons.close.addEventListener("click", () => {
       // render new text
-      updateTitleFunction("Планировщик звонков");
-      updateDescriptionFunction("Вы можете запланировать звонок на конкретное время:");
+      updateText("Планировщик звонков", params.title);
+      updateText("Вы можете запланировать звонок на конкретное время:", params.description);
       // addClass
       params.buttons.create.classList.remove("widget-element-hidden");
       params.buttons.open.classList.remove("widget-element-hidden");
